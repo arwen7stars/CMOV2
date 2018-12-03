@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Stocks"
+             x:Class="Stocks.MainPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Image Source="chart.png"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Aspect="AspectFill"
+                   Grid.Row="1"
+                   Grid.Column="1"/>
+
+        <Button Text="See Stock Graphs"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Clicked="OnButtonClicked"
+                    StyleClass="Primary"
+                    Grid.Row="2"
+                    Grid.Column="1"/>
+    </Grid>
+
+
+
+
+</ContentPage>
