@@ -13,19 +13,19 @@ namespace Stocks
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ListCompanies : ContentPage
     {
-        private List<SelectableData<Company>> DataList { get; set; }
+        private List<SelectableData<Company>> CompanyList { get; set; }
 
         public ListCompanies()
         {
             InitializeComponent();
 
-            DataList = fillCompaniesList();
-            MyListView.ItemsSource = DataList;
+            CompanyList = fillCompaniesList();
+            MyListView.ItemsSource = CompanyList;
         }
 
 
         private List<SelectableData<Company>> fillCompaniesList() {
-            DataList = new List<SelectableData<Company>>();
+            CompanyList = new List<SelectableData<Company>>();
             List<Company> companies = new List<Company>();
 
             companies.Add(new Company("AMD", "AMD", "amd_logo.png"));
@@ -41,11 +41,37 @@ namespace Stocks
 
             for(int i = 0; i < companies.Count; i++)
             {
-                DataList.Add(new SelectableData<Company>(companies[i]));
+                CompanyList.Add(new SelectableData<Company>(companies[i]));
             }
 
-            return DataList;
+            return CompanyList;
         }
 
+        async void Button_Clicked(object sender, EventArgs e)
+        {
+            int selected = 0;
+            List<Company> selectedCompanies = new List<Company>();
+            for (int i = 0; i < CompanyList.Count; i++)
+            {
+                if (CompanyList[i].Selected) {
+                    selected++;
+                    selectedCompanies.Add(CompanyList[i].Data);
+                }
+            }
+
+            if (selected == 0)
+            {
+                await DisplayAlert("Invalid Selection", "No companies selected", "OK");
+            }
+            else if (selected > 2)
+            {
+                await DisplayAlert("Invalid Selection", "Can only select up to 2 companies", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Valid Selection", "Selected " + selected + " companies", "OK");
+            }
+
+        }
     }
 }
