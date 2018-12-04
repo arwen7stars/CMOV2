@@ -3,35 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Stocks.ListCompanies"
              Title ="Companies List">
-  <ListView x:Name="MyListView"
-            ItemsSource="{Binding Items}"
-            CachingStrategy="RecycleElement">
-            
+    
+    <ListView x:Name="MyListView"
+              ItemsSource="{Binding Items}"
+              CachingStrategy="RecycleElement">
+        <ListView.RowHeight>
+            <OnPlatform x:TypeArguments="x:Int32">
+                <On Platform="Android">70</On>
+                <On Platform="UWP">150</On>
+            </OnPlatform>
+        </ListView.RowHeight>
+
     <!--Built in Cells-->
     <ListView.ItemTemplate>
         <DataTemplate>
-                <ViewCell>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="100" />
-                        </Grid.ColumnDefinitions>
+            <ViewCell>
+                <Grid>
+                    <Grid.Margin>
+                         <OnPlatform x:TypeArguments="Thickness">
+                              <On Platform="Android" Value="10"/>
+                              <On Platform="UWP" Value="25"/>
+                         </OnPlatform>
+                    </Grid.Margin>
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
 
-                        <Switch IsToggled="{Binding Selected}" Grid.Column="0" />
+                        <Switch IsToggled="{Binding Selected}" VerticalOptions="Center" Grid.Column="0"/>
 
-                        <StackLayout VerticalOptions="CenterAndExpand" Grid.Column="1">
-                            <Label Text="{Binding Data.Name}"  />
-                            <Label Text="{Binding Data.Symbol}" FontSize="10" />
-                        </StackLayout>
+                    <StackLayout VerticalOptions="Center" Grid.Column="1">
+                        <Label Text="{Binding Data.Name}"  />
+                        <Label Text="{Binding Data.Symbol}" FontSize="10" />
+                    </StackLayout>
 
-                        <Image Source="{Binding Data.ImageSource}"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               Aspect="AspectFill"
-                               Grid.Column="2"/>
-                    </Grid>
-                </ViewCell>
+                    <Image Source="{Binding Data.ImageSource}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Aspect="AspectFill"
+                            Grid.Column="2"/>
+                </Grid>
+            </ViewCell>
             </DataTemplate>
     </ListView.ItemTemplate>
     

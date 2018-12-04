@@ -8,5 +8,10 @@ namespace Stocks
     {
         public T Data { get; set; }
         public bool Selected { get; set; }
+
+        public SelectableData(T data) {
+            this.Data = data;
+            this.Selected = false;
+        }
     }
 }

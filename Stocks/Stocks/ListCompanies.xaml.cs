@@ -19,30 +19,32 @@ namespace Stocks
         {
             InitializeComponent();
 
-            DataList = new List<SelectableData<Company>>();
-
-            Company c1 = new Company();
-            c1.Name = "Apple";
-            c1.Symbol = "AAPL";
-            c1.ImageSource = "apple_logo.png";
-
-            Company c2 = new Company();
-            c2.Name = "Intel";
-            c2.Symbol = "INTL";
-            c2.ImageSource = "intel_logo.png";
-
-            SelectableData<Company> s1 = new SelectableData<Company>();
-            s1.Data = c1;
-            s1.Selected = false;
-
-            SelectableData<Company> s2 = new SelectableData<Company>();
-            s2.Data = c2;
-            s2.Selected = false;
-
-            DataList.Add(s1);
-            DataList.Add(s2);
-
+            DataList = fillCompaniesList();
             MyListView.ItemsSource = DataList;
+        }
+
+
+        private List<SelectableData<Company>> fillCompaniesList() {
+            DataList = new List<SelectableData<Company>>();
+            List<Company> companies = new List<Company>();
+
+            companies.Add(new Company("AMD", "AMD", "amd_logo.png"));
+            companies.Add(new Company("Apple", "AAPL", "apple_logo.png"));
+            companies.Add(new Company("Facebook", "FB", "facebook_logo.png"));
+            companies.Add(new Company("Google", "GOOGL", "google_logo.png"));
+            companies.Add(new Company("Hewlett Packard", "HPE", "hp_logo.png"));
+            companies.Add(new Company("IBM", "IBM", "ibm_logo.png"));
+            companies.Add(new Company("Intel", "INTC", "intel_logo.png"));
+            companies.Add(new Company("Microsoft", "MSFT", "microsoft_logo.png"));
+            companies.Add(new Company("Oracle", "ORCL", "oracle_logo.gif"));
+            companies.Add(new Company("Twitter", "TWTR", "twitter_logo.png"));
+
+            for(int i = 0; i < companies.Count; i++)
+            {
+                DataList.Add(new SelectableData<Company>(companies[i]));
+            }
+
+            return DataList;
         }
 
     }
