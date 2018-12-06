@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Stocks
 {
-    class Company
+    public class Company
     {
         public string Name { get; set; }
         public string Symbol { get; set; }
