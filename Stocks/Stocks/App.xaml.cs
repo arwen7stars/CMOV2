@@ -11,7 +11,11 @@ namespace Stocks
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = new NavigationPage(new MainPage())
+            {
+                BarBackgroundColor = Color.FromHex("890620"),
+                BarTextColor = Color.FromHex("ebd4cb")
+            };
         }
 
         protected override void OnStart()

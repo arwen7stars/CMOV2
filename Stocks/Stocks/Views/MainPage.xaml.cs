@@ -15,9 +15,17 @@ namespace Stocks
             NavigationPage.SetHasNavigationBar(this, false);
         }
 
-        async void OnButtonClicked(object sender, EventArgs args)
+        protected async override void OnAppearing()
         {
+            base.OnAppearing();
+            await Task.Delay(5000);
             await Navigation.PushAsync(new ListCompanies());
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
         }
     }
 }
