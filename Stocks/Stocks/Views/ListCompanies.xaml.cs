@@ -19,27 +19,28 @@ namespace Stocks
         {
             InitializeComponent();
 
-            CompanyList = fillCompaniesList();
+            CompanyList = FillCompaniesList();
             MyListView.ItemsSource = CompanyList;
         }
 
 
-        private List<SelectableData<Company>> fillCompaniesList() {
+        private List<SelectableData<Company>> FillCompaniesList() {
             CompanyList = new List<SelectableData<Company>>();
-            List<Company> companies = new List<Company>();
+            List<Company> companies = new List<Company>
+            {
+                new Company("AMD", "AMD", "amd_logo.png"),
+                new Company("Apple", "AAPL", "apple_logo.png"),
+                new Company("Facebook", "FB", "facebook_logo.png"),
+                new Company("Google", "GOOGL", "google_logo.png"),
+                new Company("Hewlett Packard", "HPE", "hp_logo.png"),
+                new Company("IBM", "IBM", "ibm_logo.png"),
+                new Company("Intel", "INTC", "intel_logo.png"),
+                new Company("Microsoft", "MSFT", "microsoft_logo.png"),
+                new Company("Oracle", "ORCL", "oracle_logo.gif"),
+                new Company("Twitter", "TWTR", "twitter_logo.png")
+            };
 
-            companies.Add(new Company("AMD", "AMD", "amd_logo.png"));
-            companies.Add(new Company("Apple", "AAPL", "apple_logo.png"));
-            companies.Add(new Company("Facebook", "FB", "facebook_logo.png"));
-            companies.Add(new Company("Google", "GOOGL", "google_logo.png"));
-            companies.Add(new Company("Hewlett Packard", "HPE", "hp_logo.png"));
-            companies.Add(new Company("IBM", "IBM", "ibm_logo.png"));
-            companies.Add(new Company("Intel", "INTC", "intel_logo.png"));
-            companies.Add(new Company("Microsoft", "MSFT", "microsoft_logo.png"));
-            companies.Add(new Company("Oracle", "ORCL", "oracle_logo.gif"));
-            companies.Add(new Company("Twitter", "TWTR", "twitter_logo.png"));
-
-            for(int i = 0; i < companies.Count; i++)
+            for (int i = 0; i < companies.Count; i++)
             {
                 CompanyList.Add(new SelectableData<Company>(companies[i]));
             }
@@ -69,7 +70,6 @@ namespace Stocks
             }
             else
             {
-                await DisplayAlert("Valid Selection", "Selected " + selected + " companies", "OK");
                 await Navigation.PushAsync(new GraphViewer(selectedCompanies));
             }
 

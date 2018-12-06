@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stocks.Android", "Stocks\St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stocks.UWP", "Stocks\Stocks.UWP\Stocks.UWP.csproj", "{5467CB74-E4E9-4E49-8C80-2A1E3E74E7B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stocks", "Stocks\Stocks\Stocks.csproj", "{FB9593D5-B3E8-4D32-A84C-B501703179B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stocks", "Stocks\Stocks\Stocks.csproj", "{FB9593D5-B3E8-4D32-A84C-B501703179B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

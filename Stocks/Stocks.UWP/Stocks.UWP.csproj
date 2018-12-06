@@ -105,6 +105,7 @@
   <ItemGroup>
     <Content Include="amd_logo.png" />
     <Content Include="apple_logo.png" />
+    <Content Include="app_logo.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />

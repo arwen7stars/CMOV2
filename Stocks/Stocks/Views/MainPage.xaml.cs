@@ -18,13 +18,10 @@ namespace Stocks
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await Task.Delay(5000);
-            await Navigation.PushAsync(new ListCompanies());
-        }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
+            await Task.Delay(2000);
+            await Navigation.PushAsync(new ListCompanies());
+
             Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
         }
     }

@@ -57,6 +57,16 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Button Text="Create Graph" Grid.Row="1" Clicked="Button_Clicked"></Button>
+        <Button
+            Text="CREATE GRAPH"
+            BackgroundColor="#ebd4cb"
+            TextColor="#890620"
+            Font="Bold, 15"
+            BorderColor="#da9f93"
+            BorderWidth="1"
+            Margin="5,2,5,2"
+            HeightRequest="55"
+            Clicked="Button_Clicked"
+            Grid.Row="1"></Button>
     </Grid>
 </ContentPage>

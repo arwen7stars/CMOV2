@@ -13,8 +13,8 @@ namespace Stocks
 
             MainPage = new NavigationPage(new MainPage())
             {
-                BarBackgroundColor = Color.FromHex("890620"),
-                BarTextColor = Color.FromHex("ebd4cb")
+                BarBackgroundColor = Color.FromHex(Colors.NavigationBkgColor),
+                BarTextColor = Color.FromHex(Colors.NavigationTxtColor)
             };
         }
 

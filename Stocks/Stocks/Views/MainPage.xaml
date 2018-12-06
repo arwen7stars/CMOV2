@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Image Source="chart.png"
@@ -24,9 +24,9 @@
                Grid.Row="1"
                Grid.Column="1"/>
 
-        <Label Text="STOCK GRAPHS"
-               TextColor="#890620"
-               Font="Bold,25"
+        <Image Source="app_logo.png"
+               Margin="15"
+               Aspect="AspectFill"
                HorizontalOptions="Center"
                VerticalOptions="Center"
                Grid.Row="2"
