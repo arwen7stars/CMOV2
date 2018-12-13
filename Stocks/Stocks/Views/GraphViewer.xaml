@@ -15,6 +15,11 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
+            
+            <Label Text="The graph will load shortly..."
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
