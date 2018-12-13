@@ -70,7 +70,7 @@ namespace Stocks
             }
             else
             {
-                await Navigation.PushAsync(new GraphViewer(selectedCompanies));
+                await Navigation.PushAsync(new GraphViewer(selectedCompanies, "20181113"));
             }
 
         }
