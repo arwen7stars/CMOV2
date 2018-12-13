@@ -1,19 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Stocks.ListCompanies"
-             Title ="Companies">
-    <Grid RowSpacing="0" ColumnSpacing="0">
+             x:Class="Stocks.ListCompaniesPage"
+             Title ="Select Companies">
 
+    <Grid RowSpacing="0" ColumnSpacing="0">
+        <!--Define Grid Heights For List and Button-->
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-    
-        <ListView x:Name="MyListView"
-              ItemsSource="{Binding Items}"
-              CachingStrategy="RecycleElement"
-                  Grid.Row="0">
+
+        <!-- Companies List-->
+        <ListView
+            x:Name="Companies"
+            ItemsSource="{Binding Items}"
+            CachingStrategy="RecycleElement"
+            Grid.Row="0">
+            
+            <!-- Different ListView Row Heights Depending on Platform -->
             <ListView.RowHeight>
                 <OnPlatform x:TypeArguments="x:Int32">
                     <On Platform="Android">70</On>
@@ -26,6 +31,7 @@
                 <DataTemplate>
                     <ViewCell>
                         <Grid>
+                            <!-- Different Grid Margins Depending on Platform -->
                             <Grid.Margin>
                                 <OnPlatform x:TypeArguments="Thickness">
                                     <On Platform="Android" Value="10"/>
@@ -33,30 +39,36 @@
                                 </OnPlatform>
                             </Grid.Margin>
 
+                            <!-- Define Grid Columns -->
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="3*" />
                                 <ColumnDefinition Width="100" />
                             </Grid.ColumnDefinitions>
 
+                            <!-- Switch to Select Company -->
                             <Switch IsToggled="{Binding Selected}" VerticalOptions="Center" Grid.Column="0"/>
-
+                            
+                            <!-- Company Name and Symbol -->
                             <StackLayout VerticalOptions="Center" Grid.Column="1">
                                 <Label Text="{Binding Data.Name}"  />
                                 <Label Text="{Binding Data.Symbol}" FontSize="10" />
                             </StackLayout>
 
-                            <Image Source="{Binding Data.ImageSource}"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"
-                            Aspect="AspectFill"
-                            Grid.Column="2"/>
+                            <!-- Company Image -->
+                            <Image
+                                Source="{Binding Data.ImageSource}"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Aspect="AspectFill"
+                                Grid.Column="2"/>
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
+        <!-- Create Graph Button -->
         <Button
             Text="CREATE GRAPH"
             BackgroundColor="#ebd4cb"

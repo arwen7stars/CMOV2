@@ -1,12 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Stocks.GraphViewer">
+             x:Class="Stocks.GraphViewer"
+             Title ="Evolution Graph">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <Picker x:Name="Picker" 
+                    Title="Select Quotes Range" 
+                    SelectedIndexChanged="OnPickerSelectedIndexChanged">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Last 7 Days</x:String>
+                        <x:String>Last 30 Days</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

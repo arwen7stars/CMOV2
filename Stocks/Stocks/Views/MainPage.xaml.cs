@@ -15,14 +15,16 @@ namespace Stocks
             NavigationPage.SetHasNavigationBar(this, false);
         }
 
-        protected async override void OnAppearing()
+        // Button Event to Navigate to Current Quotes Page
+        private async void Current_Quotes(object sender, EventArgs e)
         {
-            base.OnAppearing();
+            await Navigation.PushAsync(new CurrentQuotesPage());
+        }
 
-            await Task.Delay(2000);
-            await Navigation.PushAsync(new ListCompanies());
-
-            Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
+        // Button Event to Navigate to Evolution Graph Page
+        private async void Evolution_Graph(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ListCompaniesPage());
         }
     }
 }

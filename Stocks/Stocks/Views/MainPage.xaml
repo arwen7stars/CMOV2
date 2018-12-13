@@ -7,33 +7,77 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="3*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Image Source="chart.png"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               Aspect="AspectFill"
-               Grid.Row="1"
-               Grid.Column="1"/>
 
-        <Image Source="app_logo.png"
-               Margin="15"
-               Aspect="AspectFill"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               Grid.Row="2"
-               Grid.Column="1"/>
+        <!-- Grid to Show Application Logo Image and Application Name -->
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <Image 
+                Source="chart.png"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Aspect="AspectFill"
+                Grid.Row="1"
+                Grid.Column="1"/>
+
+            <Image
+                Source="app_logo.png"
+                Margin="15"
+                Aspect="AspectFill"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Grid.Row="2"
+                Grid.Column="1"/>
+        </Grid>
+
+        <!-- Grid to Show Navigation Options -->
+        <Grid Grid.Row="1"
+              VerticalOptions="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackLayout Grid.Column="1">
+                <!-- Button to Navigate to Current Quotes -->
+                <Button
+                    Text="CURRENT QUOTES"
+                    BackgroundColor="#A61B36"
+                    TextColor="#ebd4cb"
+                    Font="Bold, 15"
+                    BorderColor="#da9f93"
+                    BorderWidth="1"
+                    HeightRequest="50"
+                    Clicked="Current_Quotes"
+                    Margin="2"/>
+
+                <!-- Button to Navigate to Evolution Graph -->
+                <Button
+                    Text="EVOLUTION GRAPH"
+                    BackgroundColor="#A61B36"
+                    TextColor="#ebd4cb"
+                    Font="Bold, 15"
+                    BorderColor="#da9f93"
+                    BorderWidth="1"
+                    HeightRequest="50"
+                    Clicked="Evolution_Graph"
+                    Margin="2"/>
+            </StackLayout>
+        </Grid>
     </Grid>
-
-
-
 
 </ContentPage>

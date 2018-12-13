@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Stocks.CurrentQuotesPage"
+             Title="Current Quotes">
+    
+    <Grid>
+        <!-- Define Grid Height For ActivityIndicator and ListView -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <!-- Loading Symbol -->
+        <AbsoluteLayout Grid.Row="0">
+            <ActivityIndicator
+                IsVisible="{Binding IsBusy}" 
+                IsRunning="{Binding IsBusy}"
+                AbsoluteLayout.LayoutBounds="0.5,0.5,100,100"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                x:Name="loadingSymbol"
+                BindingContext="{x:Reference loadingSymbol}"/>
+        </AbsoluteLayout>
+
+        <!-- Current Quotes List -->
+        <ListView
+            x:Name="Quotes"
+            ItemsSource="{Binding Items}"
+            CachingStrategy="RecycleElement"
+            Grid.Row="0">
+
+            <!--Different ListView Row Heights Depending on Platform-->
+            <ListView.RowHeight>
+                <OnPlatform x:TypeArguments="x:Int32">
+                    <On Platform="Android">70</On>
+                    <On Platform="UWP">150</On>
+                </OnPlatform>
+            </ListView.RowHeight>
+
+            <!--Built in Cells-->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <!--Different Grid Margins Depending on Platform-->
+                            <Grid.Margin>
+                                <OnPlatform x:TypeArguments="Thickness">
+                                    <On Platform="Android" Value="10"/>
+                                    <On Platform="UWP" Value="25"/>
+                                </OnPlatform>
+                            </Grid.Margin>
+
+                            <!--Define Grid Columns-->
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--Company Name and Symbol-->
+                            <StackLayout 
+                                VerticalOptions="Center" 
+                                Grid.Column="0">
+                                <Label Text="{Binding Name}"  />
+                                <Label Text="{Binding Symbol}" FontSize="10" />
+                            </StackLayout>
+                            
+                            <!--Current Quote Value of Company-->
+                            <Label
+                                Text="{Binding QuotePrice, StringFormat='Price: {0:N} $'}"
+                                VerticalOptions="Center"
+                                Grid.Column="1" />
+
+                            <!--Company Image-->
+                            <Image
+                                Source="{Binding ImageSource}"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Aspect="AspectFill"
+                                Grid.Column="2" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+    
+</ContentPage>

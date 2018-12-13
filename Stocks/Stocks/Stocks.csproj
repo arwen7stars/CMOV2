@@ -16,11 +16,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\ListCompaniesPage.xaml.cs">
+      <DependentUpon>ListCompaniesPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\CurrentQuotesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\GraphViewer.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\ListCompanies.xaml">
+    <EmbeddedResource Update="Views\ListCompaniesPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ModelViews\" />
   </ItemGroup>
 </Project>

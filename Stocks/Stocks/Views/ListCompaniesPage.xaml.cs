@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -11,34 +7,22 @@ using Xamarin.Forms.Xaml;
 namespace Stocks
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ListCompanies : ContentPage
+    public partial class ListCompaniesPage : ContentPage
     {
         private List<SelectableData<Company>> CompanyList { get; set; }
 
-        public ListCompanies()
+        public ListCompaniesPage()
         {
             InitializeComponent();
 
             CompanyList = FillCompaniesList();
-            MyListView.ItemsSource = CompanyList;
+            Companies.ItemsSource = CompanyList;
         }
 
 
         private List<SelectableData<Company>> FillCompaniesList() {
             CompanyList = new List<SelectableData<Company>>();
-            List<Company> companies = new List<Company>
-            {
-                new Company("AMD", "AMD", "amd_logo.png"),
-                new Company("Apple", "AAPL", "apple_logo.png"),
-                new Company("Facebook", "FB", "facebook_logo.png"),
-                new Company("Google", "GOOGL", "google_logo.png"),
-                new Company("Hewlett Packard", "HPE", "hp_logo.png"),
-                new Company("IBM", "IBM", "ibm_logo.png"),
-                new Company("Intel", "INTC", "intel_logo.png"),
-                new Company("Microsoft", "MSFT", "microsoft_logo.png"),
-                new Company("Oracle", "ORCL", "oracle_logo.gif"),
-                new Company("Twitter", "TWTR", "twitter_logo.png")
-            };
+            List<Company> companies = ListCompanies.Companies;
 
             for (int i = 0; i < companies.Count; i++)
             {
@@ -70,9 +54,8 @@ namespace Stocks
             }
             else
             {
-                await Navigation.PushAsync(new GraphViewer(selectedCompanies));
+                await Navigation.PushAsync(new GraphViewer(selectedCompanies, GraphViewer.ExtensionType.Week));
             }
-
         }
     }
 }
