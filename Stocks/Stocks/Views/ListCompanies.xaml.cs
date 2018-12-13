@@ -70,7 +70,7 @@ namespace Stocks
             else
             {
                 await DisplayAlert("Valid Selection", "Selected " + selected + " companies", "OK");
-                await Navigation.PushAsync(new GraphViewer(selectedCompanies));
+                await Navigation.PushAsync(new GraphViewer(selectedCompanies, "20181113"));
             }
 
         }
