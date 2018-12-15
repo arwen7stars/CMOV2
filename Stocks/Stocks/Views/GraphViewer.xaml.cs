@@ -25,6 +25,10 @@ namespace Stocks
         private List<Company> Companies;
         private ExtensionType Type;
 
+        private int MaxValueY;
+        private int MinValueY;
+        private int IncreaseUnit;
+
         public GraphViewer(List<Company> Companies, ExtensionType Type)
         {
             InitializeComponent();
@@ -111,13 +115,10 @@ namespace Stocks
             Content = canvasView;
         }
 
-
-        private void DrawGraph(List<JArray> dataArray, SKCanvas canvas, int width, int height)
+        private void GetLimits(List<JArray> dataArray)
         {
             List<float> maxQuotes = new List<float>();
             List<float> minQuotes = new List<float>();
-            int canvasWidth = width - (int)(0.1 * width);
-            int canvasHeight = height - (int)(0.1 * height);
 
             foreach (JArray data in dataArray)
             {
@@ -137,6 +138,55 @@ namespace Stocks
                 TextSize = 13
             };
 
+            // range for quote values
+            float range = maxQuote - minQuote;
+            int minY = (int)Math.Floor(minQuote);
+            int maxY = (int)Math.Ceiling(maxQuote);
+            int unit = 1;
+
+            if (range > 1)
+            {
+                System.Diagnostics.Debug.WriteLine("Range: " + range);
+
+                // number of integer digits in range
+                int noDigits = (int)Math.Floor(Math.Log10(range) + 1);
+
+                System.Diagnostics.Debug.WriteLine("Digits: " + noDigits);
+
+                // unit to increase in graph
+                unit = (int)Math.Pow(10, noDigits - 1);
+
+                // max Y to show in graph
+                if (maxQuote % 10 != 0)
+                    maxY = (int)(maxQuote + (unit - maxQuote % unit));
+
+                // min Y to show in graph
+                minY = (int)(minQuote - minQuote % unit);
+            }
+
+            MaxValueY = maxY;
+            MinValueY = minY;
+            IncreaseUnit = unit;
+
+            System.Diagnostics.Debug.WriteLine("Max Quote: " + maxQuote + " max Y: " + maxY);
+            System.Diagnostics.Debug.WriteLine("Min Quote: " + minQuote + " min Y: " + minY);
+        }
+
+
+        private void DrawGraph(List<JArray> dataArray, SKCanvas canvas, int width, int height)
+        {
+            GetLimits(dataArray);
+            int RangeLimits = MaxValueY - MinValueY;
+
+            int canvasWidth = width - (int)(0.1 * width);
+            int canvasHeight = height - (int)(0.1 * height);
+
+            SKPaint labelPaint = new SKPaint
+            {
+                Color = SKColors.Black,
+                TextSize = 13
+            };
+
             bool first = true;
             foreach (JArray data in dataArray)
             {
@@ -146,25 +196,15 @@ namespace Stocks
                 // create the path
                 SKPath path = new SKPath();
                 SKPath outline = new SKPath();
+
                 path.MoveTo(x, canvasHeight);
 
                 for(int i = 0; i < data.Count; i++)
                 {
                     JObject session = (JObject) data[i];
 
-                    float range = maxQuote - minQuote;
-
-                    int noDigits = (int)Math.Floor(Math.Log10(range) + 1);
-                    int unit = (int)Math.Pow(10, noDigits - 1);
-
-                    float maxY = maxQuote;
-                    if (maxQuote % 10 != 0)
-                        maxY = maxQuote + (unit - maxQuote % unit);
-
-                    float minY = minQuote - minQuote % unit;
-
                     // normalize
-                    float y = 1 - ((float)session["close"] - minQuote) / (maxQuote - minQuote);
+                    float y = 1 - ((float)session["close"] - MinValueY) / RangeLimits;
 
                     // actual pixel value
                     y = canvasHeight * y;
@@ -193,6 +233,30 @@ namespace Stocks
                 path.LineTo(width-0.05f*width, canvasHeight);
                 path.Close();
 
+                SKPath axisY = new SKPath();
+                float axisYCanvas = canvasHeight;
+                int axisYValue = MinValueY;
+
+                axisY.MoveTo(0.05f * width, axisYCanvas);
+                canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas, labelPaint);
+
+                for (int i = 0; i < RangeLimits/IncreaseUnit; i++)
+                {
+                    axisYValue += IncreaseUnit;
+                    System.Diagnostics.Debug.WriteLine("Current axis: " + axisYValue);
+
+                    // normalize
+                    float tmp = 1f - ((float)(axisYValue - MinValueY) / RangeLimits);
+                    System.Diagnostics.Debug.WriteLine("Tmp: " + tmp);
+
+                    // actual pixel value
+                    axisYCanvas = canvasHeight * tmp;
+
+                    canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas+25f, labelPaint);
+                    axisY.LineTo(0.05f*width, axisYCanvas);
+                }
+                axisY.Close();
+
                 // create the paint
                 SKPaint strokePaint = new SKPaint
                 {
@@ -207,11 +271,20 @@ namespace Stocks
                     Style = SKPaintStyle.Fill,
                     Color = first ? SKColors.Blue.WithAlpha(100) : SKColors.Red.WithAlpha(100)
                 };
+
+                SKPaint axisPaint = new SKPaint
+                {
+                    Style = SKPaintStyle.Stroke,
+                    Color = SKColors.Black,
+                    StrokeWidth = 1
+                };
+
                 first = false;
 
                 // draw the path
                 canvas.DrawPath(outline, strokePaint);
                 canvas.DrawPath(path, fillPaint);
+                canvas.DrawPath(axisY, axisPaint);
             }
         }
 
