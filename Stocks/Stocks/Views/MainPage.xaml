@@ -48,7 +48,7 @@
               VerticalOptions="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -61,6 +61,7 @@
                     Font="Bold, 15"
                     BorderColor="#da9f93"
                     BorderWidth="1"
+                    BorderRadius="25"
                     HeightRequest="50"
                     Clicked="Current_Quotes"
                     Margin="2"/>
@@ -73,6 +74,7 @@
                     Font="Bold, 15"
                     BorderColor="#da9f93"
                     BorderWidth="1"
+                    BorderRadius="25"
                     HeightRequest="50"
                     Clicked="Evolution_Graph"
                     Margin="2"/>

@@ -95,6 +95,7 @@ namespace Stocks
 
             // create the canvas
             SKCanvasView canvasView = new SKCanvasView();
+
             canvasView.PaintSurface += (object sender, SKPaintSurfaceEventArgs args) =>
             {
                 // get the canvas
@@ -107,7 +108,6 @@ namespace Stocks
                 DrawGraph(data, canvas, args.Info.Width, args.Info.Height);
             };
 
-            // set page content
             Content = canvasView;
         }
 
@@ -116,6 +116,9 @@ namespace Stocks
         {
             List<float> maxQuotes = new List<float>();
             List<float> minQuotes = new List<float>();
+            int canvasWidth = width - (int)(0.1 * width);
+            int canvasHeight = height - (int)(0.1 * height);
+
             foreach (JArray data in dataArray)
             {
                 // list of all close session quotes
@@ -124,48 +127,91 @@ namespace Stocks
                 minQuotes.Add(quotes.Min());
             }
 
-            // get the max of all max, and the min of all min
+            // get the max of all maxList<float> minQuotes = new List<float>();
             float maxQuote = maxQuotes.Max();
             float minQuote = minQuotes.Min();
+
+            SKPaint labelPaint = new SKPaint
+            {
+                Color = SKColors.Black,
+                TextSize = 13
+            };
 
             bool first = true;
             foreach (JArray data in dataArray)
             {
-                float xdelta = (float)width / (data.Count - 1);
-                float x = 0;
+                float xdelta = (float)canvasWidth / (data.Count - 1);
+                float x = 0.05f * width;
 
                 // create the path
                 SKPath path = new SKPath();
-                path.MoveTo(0, height);
+                SKPath outline = new SKPath();
+                path.MoveTo(x, canvasHeight);
 
-                foreach (JObject session in data)
+                for(int i = 0; i < data.Count; i++)
                 {
+                    JObject session = (JObject) data[i];
+
+                    float range = maxQuote - minQuote;
+
+                    int noDigits = (int)Math.Floor(Math.Log10(range) + 1);
+                    int unit = (int)Math.Pow(10, noDigits - 1);
+
+                    float maxY = maxQuote;
+                    if (maxQuote % 10 != 0)
+                        maxY = maxQuote + (unit - maxQuote % unit);
+
+                    float minY = minQuote - minQuote % unit;
+
                     // normalize
                     float y = 1 - ((float)session["close"] - minQuote) / (maxQuote - minQuote);
 
                     // actual pixel value
-                    y = height * y;
+                    y = canvasHeight * y;
+
+                    if (i == 0)
+                    {
+                        outline.MoveTo(x, y);
+                    } else {
+                        outline.LineTo(x, y);
+                    }
 
                     path.LineTo(x, y);
 
+                    string tradingDay = (string)session["tradingDay"];
+                    DateTime date = DateTime.ParseExact(tradingDay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    String day = date.ToString("dd/MMM");
+
+                    float labelX = x - 25f;
+                    float labelY = canvasHeight + (0.03f * canvasHeight);
+
+                    canvas.DrawText(day, labelX, labelY, labelPaint);
                     Console.WriteLine(session["tradingDay"] + ": (" + x + ", " + y + ")");
 
                     x += xdelta;
                 }
-                path.LineTo(width, height);
+                path.LineTo(width-0.05f*width, canvasHeight);
                 path.Close();
 
                 // create the paint
                 SKPaint strokePaint = new SKPaint
                 {
-                    Style = SKPaintStyle.StrokeAndFill,
-                    Color = first ? SKColors.Blue.WithAlpha(50) : SKColors.Red.WithAlpha(50),
+                    Style = SKPaintStyle.Stroke,
+                    Color = first ? SKColors.Blue : SKColors.Red,
                     StrokeWidth = 1
+                };
+
+                // create the paint
+                SKPaint fillPaint = new SKPaint
+                {
+                    Style = SKPaintStyle.Fill,
+                    Color = first ? SKColors.Blue.WithAlpha(100) : SKColors.Red.WithAlpha(100)
                 };
                 first = false;
 
                 // draw the path
-                canvas.DrawPath(path, strokePaint);
+                canvas.DrawPath(outline, strokePaint);
+                canvas.DrawPath(path, fillPaint);
             }
         }
 
