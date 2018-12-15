@@ -30,7 +30,12 @@ namespace Stocks
         private int IncreaseUnit;
 
         private const float HORIZONTAL_PADDING = 0.075f;
-        private const float VERTICAL_PADDING = 0.05f;
+        private const float VERTICAL_PADDING = 0.075f;
+
+        private const float AXIS_X_HORIZONTAL_PADDING = 0.04f;
+        private const float AXIS_X_VERTICAL_PADDING = 25f;
+        private const float AXIS_Y_HORIZONTAL_PADDING = 0.025f;
+        private const float AXIS_Y_VERTICAL_PADDING = 0f;
 
         public GraphViewer(List<Company> Companies, ExtensionType Type)
         {
@@ -172,14 +177,23 @@ namespace Stocks
             System.Diagnostics.Debug.WriteLine("Min Quote: " + minQuote + " min Y: " + minY);
         }
 
-        private void DrawYAxis(SKCanvas canvas, SKPaint labelPaint, int RangeLimits, int canvasHeight, int width)
+        private void DrawYAxis(SKCanvas canvas, SKPaint labelPaint, int RangeLimits, int canvasHeight, int width, int height)
         {
             SKPath axisY = new SKPath();
-            float axisYCanvas = canvasHeight;
+            float axisYCanvas = canvasHeight + VERTICAL_PADDING * height;
             int axisYValue = MinValueY;
 
+            SKPaint linePaint = new SKPaint
+            {
+                Style = SKPaintStyle.Stroke,
+                Color = SKColors.Black,
+                StrokeWidth = 3
+            };
+
             axisY.MoveTo(HORIZONTAL_PADDING * width, axisYCanvas);
-            canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas, labelPaint);
+
+            canvas.DrawText(axisYValue.ToString(), AXIS_Y_HORIZONTAL_PADDING * width, axisYCanvas + AXIS_Y_VERTICAL_PADDING*height, labelPaint);
+            canvas.DrawLine(HORIZONTAL_PADDING * width - 5f, axisYCanvas, HORIZONTAL_PADDING * width + 5f, axisYCanvas, linePaint);
 
             for (int i = 0; i < RangeLimits / IncreaseUnit; i++)
             {
@@ -187,13 +201,14 @@ namespace Stocks
                 axisYValue += IncreaseUnit;
 
                 // normalize
-                float tmp = 1f - ((float)(axisYValue - MinValueY) / RangeLimits);
+                axisYCanvas = 1f - ((float)(axisYValue - MinValueY) / RangeLimits);
 
                 // actual pixel value on canvas
-                axisYCanvas = canvasHeight * tmp;
+                axisYCanvas = canvasHeight * axisYCanvas + VERTICAL_PADDING * height;
 
                 // show axis y value
-                canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas, labelPaint);
+                canvas.DrawText(axisYValue.ToString(), AXIS_Y_HORIZONTAL_PADDING * width, axisYCanvas + AXIS_Y_VERTICAL_PADDING*height, labelPaint);
+                canvas.DrawLine(HORIZONTAL_PADDING * width-5f, axisYCanvas, HORIZONTAL_PADDING * width + 5f, axisYCanvas, linePaint);
 
                 // create axis y line
                 axisY.LineTo(HORIZONTAL_PADDING * width, axisYCanvas);
@@ -210,7 +225,7 @@ namespace Stocks
             canvas.DrawPath(axisY, axisPaint);
         }
 
-        private void DrawLabelXAxis(int index, SKCanvas canvas, SKPaint labelPaint, JObject session, float x, int canvasHeight, int width)
+        private void DrawLabelXAxis(int index, SKCanvas canvas, SKPaint labelPaint, JObject session, float x, int canvasHeight, int width, int height)
         {
             int noLabels = 3;
 
@@ -220,8 +235,8 @@ namespace Stocks
                 DateTime date = DateTime.ParseExact(tradingDay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                 String day = date.ToString("dd/MMM");
 
-                float labelX = x - 25f;
-                float labelY = canvasHeight + (0.03f * canvasHeight);
+                float labelX = x - AXIS_X_VERTICAL_PADDING;
+                float labelY = canvasHeight + VERTICAL_PADDING * height + (AXIS_X_HORIZONTAL_PADDING * canvasHeight);
 
                 canvas.DrawText(day, labelX, labelY, labelPaint);
             }
@@ -234,7 +249,7 @@ namespace Stocks
             int RangeLimits = MaxValueY - MinValueY;
 
             int canvasWidth = width - (int)(0.15 * width);
-            int canvasHeight = height - (int)(0.1 * height);
+            int canvasHeight = height - (int)(0.15 * height);
 
             // label for Axises
             SKPaint labelPaint = new SKPaint
@@ -250,14 +265,17 @@ namespace Stocks
             bool first = true;
             foreach (JArray data in dataArray)
             {
-                float xdelta = (float)canvasWidth / (data.Count - 1);
+                float xdelta = (float) canvasWidth / (data.Count - 1);
                 float x = HORIZONTAL_PADDING * width;
 
-                // create the path
+                // create the graph's path
                 SKPath path = new SKPath();
+
+                // create graph outline
                 SKPath outline = new SKPath();
 
-                path.MoveTo(x, canvasHeight);
+                // create contour for graph
+                path.MoveTo(x, canvasHeight + VERTICAL_PADDING * height);
 
                 for (int i = 0; i < data.Count; i++)
                 {
@@ -268,21 +286,22 @@ namespace Stocks
                     float y = 1 - ((float)session["close"] - MinValueY) / RangeLimits;
 
                     // actual pixel value
-                    y = canvasHeight * y;
+                    y = canvasHeight * y + VERTICAL_PADDING * height;
 
                     // if first iteration, create countour, otherwise create outlining line
                     if (i == 0) { outline.MoveTo(x, y); }
                     else outline.LineTo(x, y);
                     
                     path.LineTo(x, y);
-                    DrawLabelXAxis(i, canvas, labelPaint, session, x, canvasHeight, width);
+                    DrawLabelXAxis(i, canvas, labelPaint, session, x, canvasHeight, width, height);
 
                     x += xdelta;
                 }
-                path.LineTo(width - HORIZONTAL_PADDING * width, canvasHeight);
+                path.LineTo(width - HORIZONTAL_PADDING * width, canvasHeight + VERTICAL_PADDING * height);
                 path.Close();
 
-                DrawYAxis(canvas, labelPaint, RangeLimits, canvasHeight, width);
+                // draw Y Axis
+                DrawYAxis(canvas, labelPaint, RangeLimits, canvasHeight, width, height);
 
                 // create the paint
                 SKPaint strokePaint = new SKPaint
