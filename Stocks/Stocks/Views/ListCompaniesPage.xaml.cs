@@ -54,7 +54,7 @@ namespace Stocks
             }
             else
             {
-                await Navigation.PushAsync(new GraphViewer(selectedCompanies, GraphViewer.ExtensionType.Week));
+                await Navigation.PushAsync(new GraphViewer(selectedCompanies, GraphViewer.ExtensionType.Month));
             }
         }
     }

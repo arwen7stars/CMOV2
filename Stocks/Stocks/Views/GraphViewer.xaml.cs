@@ -19,7 +19,7 @@ namespace Stocks
     {
         public enum ExtensionType { Week = 0, Month = 1};
 
-        private const string API_KEY = "560d207f7ecf0ee3b6a05584942b6a73";
+        private const string API_KEY = "7f0ecc205dac93675a6fea8f36e2ec0c";
         private const string URL = "https://marketdata.websol.barchart.com/getHistory.json?apikey={0}&symbol={1}&type=daily&startDate={2}";
 
         private List<Company> Companies;
@@ -28,6 +28,9 @@ namespace Stocks
         private int MaxValueY;
         private int MinValueY;
         private int IncreaseUnit;
+
+        private const float HORIZONTAL_PADDING = 0.075f;
+        private const float VERTICAL_PADDING = 0.05f;
 
         public GraphViewer(List<Company> Companies, ExtensionType Type)
         {
@@ -132,12 +135,6 @@ namespace Stocks
             float maxQuote = maxQuotes.Max();
             float minQuote = minQuotes.Min();
 
-            SKPaint labelPaint = new SKPaint
-            {
-                Color = SKColors.Black,
-                TextSize = 13
-            };
-
             // range for quote values
             float range = maxQuote - minQuote;
             int minY = (int)Math.Floor(minQuote);
@@ -154,10 +151,13 @@ namespace Stocks
                 System.Diagnostics.Debug.WriteLine("Digits: " + noDigits);
 
                 // unit to increase in graph
-                unit = (int)Math.Pow(10, noDigits - 1);
+                if (noDigits > 2)
+                {
+                    unit = (int)Math.Pow(10, noDigits - 2);
+                } else unit = (int)Math.Pow(10, noDigits - 1);
 
                 // max Y to show in graph
-                if (maxQuote % 10 != 0)
+                if (maxQuote % unit != 0)
                     maxY = (int)(maxQuote + (unit - maxQuote % unit));
 
                 // min Y to show in graph
@@ -172,26 +172,86 @@ namespace Stocks
             System.Diagnostics.Debug.WriteLine("Min Quote: " + minQuote + " min Y: " + minY);
         }
 
+        private void DrawYAxis(SKCanvas canvas, SKPaint labelPaint, int RangeLimits, int canvasHeight, int width)
+        {
+            SKPath axisY = new SKPath();
+            float axisYCanvas = canvasHeight;
+            int axisYValue = MinValueY;
+
+            axisY.MoveTo(HORIZONTAL_PADDING * width, axisYCanvas);
+            canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas, labelPaint);
+
+            for (int i = 0; i < RangeLimits / IncreaseUnit; i++)
+            {
+                // increase axis y value
+                axisYValue += IncreaseUnit;
+
+                // normalize
+                float tmp = 1f - ((float)(axisYValue - MinValueY) / RangeLimits);
+
+                // actual pixel value on canvas
+                axisYCanvas = canvasHeight * tmp;
+
+                // show axis y value
+                canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas, labelPaint);
+
+                // create axis y line
+                axisY.LineTo(HORIZONTAL_PADDING * width, axisYCanvas);
+            }
+            axisY.Close();
+
+            SKPaint axisPaint = new SKPaint
+            {
+                Style = SKPaintStyle.Stroke,
+                Color = SKColors.Black,
+                StrokeWidth = 1
+            };
+
+            canvas.DrawPath(axisY, axisPaint);
+        }
+
+        private void DrawLabelXAxis(int index, SKCanvas canvas, SKPaint labelPaint, JObject session, float x, int canvasHeight, int width)
+        {
+            int noLabels = 3;
+
+            if (Type == ExtensionType.Week || index % noLabels == 0)
+            {
+                string tradingDay = (string)session["tradingDay"];
+                DateTime date = DateTime.ParseExact(tradingDay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                String day = date.ToString("dd/MMM");
+
+                float labelX = x - 25f;
+                float labelY = canvasHeight + (0.03f * canvasHeight);
+
+                canvas.DrawText(day, labelX, labelY, labelPaint);
+            }
+        }
+
 
         private void DrawGraph(List<JArray> dataArray, SKCanvas canvas, int width, int height)
         {
             GetLimits(dataArray);
             int RangeLimits = MaxValueY - MinValueY;
 
-            int canvasWidth = width - (int)(0.1 * width);
+            int canvasWidth = width - (int)(0.15 * width);
             int canvasHeight = height - (int)(0.1 * height);
 
+            // label for Axises
             SKPaint labelPaint = new SKPaint
             {
-                Color = SKColors.Black,
-                TextSize = 13
+                Color = SKColors.Black
             };
+
+            if (Device.RuntimePlatform == Device.Android)
+                labelPaint.TextSize = 25;
+            else if (Device.RuntimePlatform == Device.UWP)
+                labelPaint.TextSize = 13;
 
             bool first = true;
             foreach (JArray data in dataArray)
             {
                 float xdelta = (float)canvasWidth / (data.Count - 1);
-                float x = 0.05f * width;
+                float x = HORIZONTAL_PADDING * width;
 
                 // create the path
                 SKPath path = new SKPath();
@@ -199,8 +259,9 @@ namespace Stocks
 
                 path.MoveTo(x, canvasHeight);
 
-                for(int i = 0; i < data.Count; i++)
+                for (int i = 0; i < data.Count; i++)
                 {
+                    // quote information
                     JObject session = (JObject) data[i];
 
                     // normalize
@@ -209,53 +270,19 @@ namespace Stocks
                     // actual pixel value
                     y = canvasHeight * y;
 
-                    if (i == 0)
-                    {
-                        outline.MoveTo(x, y);
-                    } else {
-                        outline.LineTo(x, y);
-                    }
-
+                    // if first iteration, create countour, otherwise create outlining line
+                    if (i == 0) { outline.MoveTo(x, y); }
+                    else outline.LineTo(x, y);
+                    
                     path.LineTo(x, y);
-
-                    string tradingDay = (string)session["tradingDay"];
-                    DateTime date = DateTime.ParseExact(tradingDay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    String day = date.ToString("dd/MMM");
-
-                    float labelX = x - 25f;
-                    float labelY = canvasHeight + (0.03f * canvasHeight);
-
-                    canvas.DrawText(day, labelX, labelY, labelPaint);
-                    Console.WriteLine(session["tradingDay"] + ": (" + x + ", " + y + ")");
+                    DrawLabelXAxis(i, canvas, labelPaint, session, x, canvasHeight, width);
 
                     x += xdelta;
                 }
-                path.LineTo(width-0.05f*width, canvasHeight);
+                path.LineTo(width - HORIZONTAL_PADDING * width, canvasHeight);
                 path.Close();
 
-                SKPath axisY = new SKPath();
-                float axisYCanvas = canvasHeight;
-                int axisYValue = MinValueY;
-
-                axisY.MoveTo(0.05f * width, axisYCanvas);
-                canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas, labelPaint);
-
-                for (int i = 0; i < RangeLimits/IncreaseUnit; i++)
-                {
-                    axisYValue += IncreaseUnit;
-                    System.Diagnostics.Debug.WriteLine("Current axis: " + axisYValue);
-
-                    // normalize
-                    float tmp = 1f - ((float)(axisYValue - MinValueY) / RangeLimits);
-                    System.Diagnostics.Debug.WriteLine("Tmp: " + tmp);
-
-                    // actual pixel value
-                    axisYCanvas = canvasHeight * tmp;
-
-                    canvas.DrawText(axisYValue.ToString(), 0, axisYCanvas+25f, labelPaint);
-                    axisY.LineTo(0.05f*width, axisYCanvas);
-                }
-                axisY.Close();
+                DrawYAxis(canvas, labelPaint, RangeLimits, canvasHeight, width);
 
                 // create the paint
                 SKPaint strokePaint = new SKPaint
@@ -272,19 +299,11 @@ namespace Stocks
                     Color = first ? SKColors.Blue.WithAlpha(100) : SKColors.Red.WithAlpha(100)
                 };
 
-                SKPaint axisPaint = new SKPaint
-                {
-                    Style = SKPaintStyle.Stroke,
-                    Color = SKColors.Black,
-                    StrokeWidth = 1
-                };
-
                 first = false;
 
                 // draw the path
                 canvas.DrawPath(outline, strokePaint);
                 canvas.DrawPath(path, fillPaint);
-                canvas.DrawPath(axisY, axisPaint);
             }
         }
 

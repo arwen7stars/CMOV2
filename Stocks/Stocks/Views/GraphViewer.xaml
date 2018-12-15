@@ -28,10 +28,7 @@
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
                     Grid.Row="0"/>
-
-                <skiaforms:SKCanvasView
-                    x:Name="Canvas"
-                    Grid.Row="0"/>
+                
             </Grid>
         </StackLayout>
     </ContentPage.Content>
