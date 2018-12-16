@@ -458,8 +458,12 @@ namespace Stocks
             // company data
             JObject session = (JObject)data[0];
 
-            // show initial axis y value
-            canvas.DrawText((string)session["symbol"], final_x + 5f, y + 5f, titlePaint);
+            string symbol = (string)session["symbol"];
+
+            Company Company = ListCompanies.Companies.Find(c => c.Symbol == symbol);
+
+            // show company label
+            canvas.DrawText(Company.Name, final_x + 5f, y + 5f, titlePaint);
 
         }
 
@@ -488,6 +492,7 @@ namespace Stocks
                 }
                 catch (Exception ex)
                 {
+                    HideLoadingSymbol();
                     await DisplayAlert("An error occurred", ex.Message, "OK");
                 }
             }                

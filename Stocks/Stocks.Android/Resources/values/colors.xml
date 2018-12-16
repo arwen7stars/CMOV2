@@ -5,5 +5,5 @@
   <color name="colorPrimaryDark">#303F9F</color>
   <color name="colorAccent">#FF4081</color>
 
-  <color name="ListViewSelected">#ddf1ed</color>
+  <color name="ListViewSelected">#eff8f7</color>
 </resources>

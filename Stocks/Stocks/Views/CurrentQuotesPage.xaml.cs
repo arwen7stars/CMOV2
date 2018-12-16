@@ -63,6 +63,7 @@ namespace Stocks
                 }
                 catch (Exception ex)
                 {
+                    HideLoadingSymbol();
                     await DisplayAlert("An error occurred", ex.Message, "OK");
                 }
 
