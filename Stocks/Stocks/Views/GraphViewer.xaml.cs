@@ -43,7 +43,7 @@ namespace Stocks
         private const float VERTICAL_PADDING = 0.125f;
 
         private const float AXIS_Y_HORIZONTAL_PADDING = 0.07f;
-        private const float AXIS_X_VERTICAL_PADDING = 0.04f;
+        private const float AXIS_X_VERTICAL_PADDING = 0.05f;
 
         public GraphViewer(List<Company> Companies, ExtensionType Type)
         {

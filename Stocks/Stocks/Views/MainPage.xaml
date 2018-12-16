@@ -68,7 +68,7 @@
 
                 <!-- Button to Navigate to Evolution Graph -->
                 <Button
-                    Text="EVOLUTION GRAPH"
+                    Text="HISTORY GRAPH"
                     BackgroundColor="#A61B36"
                     TextColor="#ebd4cb"
                     Font="Bold, 15"
