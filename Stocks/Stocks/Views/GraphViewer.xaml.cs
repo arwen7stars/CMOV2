@@ -19,7 +19,7 @@ namespace Stocks
     {
         public enum ExtensionType { Week = 0, Month = 1};
 
-        private const string API_KEY = "1924509c26e52c0ca4466a3da9613d1e";
+        private const string API_KEY = "75dc0630ff858189ab1785228121e05a";
         private const string URL = "https://marketdata.websol.barchart.com/getHistory.json?apikey={0}&symbol={1}&type=daily&startDate={2}";
 
         private List<Company> Companies;
@@ -235,12 +235,19 @@ namespace Stocks
                 StrokeWidth = 3
             };
 
+            SKPaint thinLine = new SKPaint
+            {
+                Style = SKPaintStyle.Stroke,
+                Color = SKColors.Gray.WithAlpha(50),
+                StrokeWidth = 1
+            };
+
             axisY.MoveTo(HORIZONTAL_PADDING * width, axisYCanvas);
 
             // show initial axis y value
             canvas.DrawText(axisYValue.ToString(), AXIS_Y_HORIZONTAL_PADDING * width, axisYCanvas, labelPaint);
 
-            canvas.DrawLine(HORIZONTAL_PADDING * width - 5f, axisYCanvas, HORIZONTAL_PADDING * width + 5f, axisYCanvas, linePaint);
+            // canvas.DrawLine(HORIZONTAL_PADDING * width - 5f, axisYCanvas, HORIZONTAL_PADDING * width + 5f, axisYCanvas, linePaint);
 
             for (int i = 0; i < RangeLimits / IncreaseUnit; i++)
             {
@@ -257,7 +264,10 @@ namespace Stocks
                 canvas.DrawText(axisYValue.ToString(), AXIS_Y_HORIZONTAL_PADDING * width, axisYCanvas, labelPaint);
 
                 // show line of the axis on the graph
-                canvas.DrawLine(HORIZONTAL_PADDING * width-5f, axisYCanvas, HORIZONTAL_PADDING * width + 5f, axisYCanvas, linePaint);
+
+                // canvas.DrawLine(HORIZONTAL_PADDING * width-5f, axisYCanvas, HORIZONTAL_PADDING * width + 5f, axisYCanvas, linePaint);
+
+                canvas.DrawLine(HORIZONTAL_PADDING * width, axisYCanvas, HORIZONTAL_PADDING * width + CanvasWidth, axisYCanvas, thinLine);
 
                 // create axis y line
                 axisY.LineTo(HORIZONTAL_PADDING * width, axisYCanvas);
@@ -271,6 +281,13 @@ namespace Stocks
         {
             int noLabels = 3;
 
+            SKPaint thinLine = new SKPaint
+            {
+                Style = SKPaintStyle.Stroke,
+                Color = SKColors.Gray.WithAlpha(50),
+                StrokeWidth = 1
+            };
+
             if (Type == ExtensionType.Week || index % noLabels == 0)
             {
                 // get trading day from json object
@@ -282,6 +299,9 @@ namespace Stocks
 
                 float labelX = x;
                 float labelY = CanvasHeight + VERTICAL_PADDING * height + (AXIS_X_VERTICAL_PADDING * CanvasHeight);
+
+                canvas.DrawLine(x, CanvasHeight + VERTICAL_PADDING * height, x, VERTICAL_PADDING * height, thinLine);
+
 
                 // show date
                 canvas.DrawText(day, labelX, labelY, labelPaint);
@@ -391,15 +411,15 @@ namespace Stocks
                 DrawLabels(canvas, data, redColor, blueColor, first, width, height);
                 first = false;
 
-                // draw the graph paths
-                canvas.DrawPath(outline, strokePaint);
-                canvas.DrawPath(path, fillPaint);
-
                 // draw X Axis
                 DrawXAxis(canvas, axisPaint, width, height);
 
                 // draw Y Axis
                 DrawYAxis(canvas, axisPaint, labelPaint, width, height);
+
+                // draw the graph paths
+                canvas.DrawPath(outline, strokePaint);
+                canvas.DrawPath(path, fillPaint);
             }
         }
 
