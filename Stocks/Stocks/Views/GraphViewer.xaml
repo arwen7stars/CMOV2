@@ -8,7 +8,8 @@
         <StackLayout>
             <Picker x:Name="Picker" 
                     Title="Select Quotes Range" 
-                    SelectedIndexChanged="OnPickerSelectedIndexChanged">
+                    SelectedIndexChanged="OnPickerSelectedIndexChanged"
+                    Margin="5">
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
                         <x:String>Range: Last 7 Days</x:String>

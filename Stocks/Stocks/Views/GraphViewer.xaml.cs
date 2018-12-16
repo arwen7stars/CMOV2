@@ -146,29 +146,11 @@ namespace Stocks
                 data.Add(compData);
             }
             Data = data;
+
             DataLoaded = true;
             HideLoadingSymbol();
 
             GraphCanvasView.InvalidateSurface();
-
-            /*
-            // create the canvas
-            SKCanvasView canvasView = new SKCanvasView();
-
-            canvasView.PaintSurface += (object sender, SKPaintSurfaceEventArgs args) =>
-            {
-                // get the canvas
-                SKCanvas canvas = args.Surface.Canvas;
-
-                // clear the canvas with a transparent color
-                canvas.Clear();
-
-                // draw the graph
-                DrawGraph(data, canvas, args.Info.Width, args.Info.Height);
-            };
-
-            Content = canvasView;
-            */
         }
 
         private List<JArray> GetLimits(List<JArray> dataArray)
@@ -317,7 +299,8 @@ namespace Stocks
             SKPaint labelPaint = new SKPaint
             {
                 Color = SKColors.Black,
-                TextAlign = SKTextAlign.Center
+                TextAlign = SKTextAlign.Center,
+                IsAntialias = true
             };
 
             // different text sizes depending on platforms
@@ -380,12 +363,6 @@ namespace Stocks
                     StrokeWidth = 1
                 };
 
-                // draw X Axis
-                DrawXAxis(canvas, axisPaint, width, height);
-
-                // draw Y Axis
-                DrawYAxis(canvas, axisPaint, labelPaint, width, height);
-
                 // reddish color
                 Color firstColor = Color.FromRgb(225, 107, 90);
 
@@ -400,6 +377,7 @@ namespace Stocks
                 {
                     Style = SKPaintStyle.Stroke,
                     Color = first ? blueColor : redColor,
+                    IsAntialias = true,
                     StrokeWidth = 4
                 };
 
@@ -416,6 +394,12 @@ namespace Stocks
                 // draw the graph paths
                 canvas.DrawPath(outline, strokePaint);
                 canvas.DrawPath(path, fillPaint);
+
+                // draw X Axis
+                DrawXAxis(canvas, axisPaint, width, height);
+
+                // draw Y Axis
+                DrawYAxis(canvas, axisPaint, labelPaint, width, height);
             }
         }
 
@@ -431,7 +415,8 @@ namespace Stocks
 
             SKPaint titlePaint = new SKPaint
             {
-                Color = SKColors.Black
+                Color = SKColors.Black,
+                IsAntialias = true
             };
 
             // different text sizes depending on platforms
