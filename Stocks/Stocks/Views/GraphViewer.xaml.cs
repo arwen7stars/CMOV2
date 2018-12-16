@@ -455,9 +455,11 @@ namespace Stocks
             // draw first company line
             canvas.DrawLine(initial_x, y, final_x, y, labelStroke);
 
+            // company data
             JObject session = (JObject)data[0];
+
             // show initial axis y value
-            canvas.DrawText((string)session["symbol"], final_x + 5f, y, titlePaint);
+            canvas.DrawText((string)session["symbol"], final_x + 5f, y + 5f, titlePaint);
 
         }
 
