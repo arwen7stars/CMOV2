@@ -24,6 +24,8 @@ namespace Stocks
 
         private List<Company> Companies;
         private ExtensionType Type;
+        private List<JArray> Data;
+        private bool DataLoaded = false;
 
         private int MaxValueY;
         private int MinValueY;
@@ -50,10 +52,25 @@ namespace Stocks
             this.Companies = Companies;
             this.Type = Type;
 
+            ShowLoadingSymbol();
             SelectPickerIndex();
-            string RequestDate = GetRequestDate();
 
-            DrawCanvas(Companies, RequestDate);
+            string RequestDate = GetRequestDate();
+            FetchData(Companies, RequestDate);
+        }
+
+        private void ShowLoadingSymbol()
+        {
+            IsBusy = true;
+            loadingSymbol.IsVisible = true;
+            loadingSymbol.IsRunning = true;
+        }
+
+        private void HideLoadingSymbol()
+        {
+            IsBusy = false;
+            loadingSymbol.IsVisible = false;
+            loadingSymbol.IsRunning = false;
         }
 
         private void SelectPickerIndex()
@@ -67,6 +84,22 @@ namespace Stocks
             else
             {
                 picker.SelectedIndex = 1;
+            }
+        }
+
+        void OnPickerSelectedIndexChanged(object sender, EventArgs e)
+        {
+            var picker = (Picker)sender;
+            int selectedIndex = picker.SelectedIndex;
+
+            if (selectedIndex != ((int)Type) && selectedIndex != -1)
+            {
+                ExtensionType RangeType = (ExtensionType)selectedIndex;
+                System.Diagnostics.Debug.WriteLine(selectedIndex);
+
+                var vUpdatedPage = new GraphViewer(Companies, RangeType);
+                Navigation.InsertPageBefore(vUpdatedPage, this);
+                Navigation.PopAsync();
             }
         }
 
@@ -85,20 +118,22 @@ namespace Stocks
             return RequestDate;
         }
 
-        void OnPickerSelectedIndexChanged(object sender, EventArgs e)
+        void OnDrawGraph(object sender, SKPaintSurfaceEventArgs args)
         {
-            var picker = (Picker)sender;
-            int selectedIndex = picker.SelectedIndex;
-
-            if (selectedIndex != ((int)Type))
+            if (DataLoaded)
             {
-                ExtensionType RangeType = (ExtensionType)selectedIndex;
+                // get the canvas
+                SKCanvas canvas = args.Surface.Canvas;
 
-                new GraphViewer(Companies, RangeType);
+                // clear the canvas with a transparent color
+                canvas.Clear();
+
+                // draw the graph
+                DrawGraph(Data, canvas, args.Info.Width, args.Info.Height);
             }
         }
 
-        private async void DrawCanvas(List<Company> companies, string startDate)
+        private async void FetchData(List<Company> companies, string startDate)
         {
             List<JArray> data = new List<JArray>();
             
@@ -109,8 +144,14 @@ namespace Stocks
                 if (compData == null) return;
 
                 data.Add(compData);
-            }      
+            }
+            Data = data;
+            DataLoaded = true;
+            HideLoadingSymbol();
 
+            GraphCanvasView.InvalidateSurface();
+
+            /*
             // create the canvas
             SKCanvasView canvasView = new SKCanvasView();
 
@@ -127,6 +168,7 @@ namespace Stocks
             };
 
             Content = canvasView;
+            */
         }
 
         private List<JArray> GetLimits(List<JArray> dataArray)
