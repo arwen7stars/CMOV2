@@ -14,7 +14,7 @@ namespace Stocks
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CurrentQuotesPage : ContentPage
     {
-        private const string API_KEY = "560d207f7ecf0ee3b6a05584942b6a73";
+        private const string API_KEY = "1924509c26e52c0ca4466a3da9613d1e";
         private const string URL = "https://marketdata.websol.barchart.com/getQuote.json?apikey={0}&symbols={1}";
 
         private ObservableCollection<Quote> QuoteList { get; set; }

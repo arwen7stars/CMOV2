@@ -19,7 +19,7 @@ namespace Stocks
     {
         public enum ExtensionType { Week = 0, Month = 1};
 
-        private const string API_KEY = "75dc0630ff858189ab1785228121e05a";
+        private const string API_KEY = "1924509c26e52c0ca4466a3da9613d1e";
         private const string URL = "https://marketdata.websol.barchart.com/getHistory.json?apikey={0}&symbol={1}&type=daily&startDate={2}";
 
         private List<Company> Companies;
